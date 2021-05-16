@@ -2,9 +2,15 @@ __pycache__
 
 .vscode
 
+<<<<<<< HEAD
 local_settings.py
 
 env
 
 venv
 
+=======
+env
+
+local_settings.py
+>>>>>>> 0a9cadf44228cb41cd95884471ea6be991c0a4a5
