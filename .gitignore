@@ -1,3 +1,7 @@
-env
 __pycache__
+
+.vscode
+
+env
+
 local_settings.py
