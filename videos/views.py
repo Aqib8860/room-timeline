@@ -29,6 +29,7 @@ def videoConvertor(s3, video,profile_id,current_time):
 
 @jwt_authentication
 async def uploadView(request):
+    # import pdb; pdb.set_trace();
     try:
 
         profile_id= request.user_id
