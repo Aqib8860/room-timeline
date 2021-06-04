@@ -7,7 +7,7 @@ import functools
 #JWT 
 async def verify_access_token(token):
     present_time = datetime.utcnow()
-    print(present_time)
+    # print(present_time)
     try:
         payload = jwt.decode(token, algorithms=["HS256"], key=JWT_SECRET_KEY)
 
@@ -17,10 +17,11 @@ async def verify_access_token(token):
         if present_time.timestamp() > payload.get("exp"):
             raise jwt.exceptions.ExpiredSignatureError("Token Invalid or Expired")
 
+        # print(payload)
         return True, payload.get('id')
 
     except Exception as e:
-        raise e
+        raise str(e)
 
 
 def jwt_authentication(endpoint, *args, **kwargs):
@@ -32,7 +33,13 @@ def jwt_authentication(endpoint, *args, **kwargs):
             token = request.headers['authorization'].split(" ")[1]
 
             res, user_id = await verify_access_token(token)
-            
+
+        except jwt.exceptions.InvalidKeyError as e:
+            return JSONResponse(content={
+                "message": str(e),
+                "status": False
+            }, status_code=401)
+
         except Exception as e:
             return JSONResponse(content={
                 "message": str(e),
@@ -41,6 +48,7 @@ def jwt_authentication(endpoint, *args, **kwargs):
 
         if res:
             request.user_id = user_id
+            print(user_id)
             return await endpoint(request, **kwargs)
 
     return inner

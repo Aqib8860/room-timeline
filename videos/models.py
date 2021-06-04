@@ -1,26 +1,18 @@
 from server.settings import clientOpen
 
 class BaseUpload:
-    def __init__(self, id ,title, description, duration, category, thumbnail, upload_file, timestamp):
-        self.profile_id=id
-        self.title=title
-        self.description=description
-        self.thumbnail=thumbnail
-        self.duration=duration
-        self.category=category
-        self.upload_file=upload_file
-        self.timestamp=timestamp
 
-    def create(self):
+    def create(self, profile_id ,title, description, duration, category, thumbnail, upload_file, timestamp):
         client = clientOpen()
         client.videos.upload.insert_one({
-            "profile_id":self.profile_id,
-            "title":self.title,
-            "description":self.description,
-            "thumbnail":self.thumbnail,
-            "duration":self.duration,
-            "category":self.category,
-            "upload_file":self.upload_file,
-            "timestamp":self.timestamp
+            "_id":profile_id+"_"+title+"_"+str(timestamp)+"_"+category+"_"+str(duration),
+            "profile_id":profile_id,
+            "title":title,
+            "description":description,
+            "thumbnail":thumbnail,
+            "duration":duration,
+            "category":category,
+            "upload_file":upload_file,
+            "timestamp":timestamp
         })
         client.close()
