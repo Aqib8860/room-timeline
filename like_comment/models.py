@@ -52,7 +52,7 @@ class Comment:
         if c:=self.client.videos.comments.find_one({"video_id":video_id}):
 
             # Add New Comment To Existing Document
-            self.client.videos.likes.update({"video_id":video_id},
+            self.client.videos.comments.update({"video_id":video_id},
                 {
                     "$push":{
                         "comments":(profile_id,comment)
@@ -69,7 +69,7 @@ class Comment:
                 "comments":[(profile_id,comment)]
             })
 
-        return "Liked Successfully"
+        return "Commented Successfully"
 
     def close(self):
         self.client.close()
