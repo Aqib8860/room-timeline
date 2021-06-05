@@ -9,29 +9,23 @@ from os import listdir, system
 from threading import Thread
 
 def videoConvertor(s3, video,profile_id,current_time):
-    try:
+    output = f"Videos/Video{profile_id}_{current_time}/"
+    _480p  = Representation(Size(854, 480), Bitrate(750 * 1024, 192 * 1024))
+    dash = input(video).dash(Formats.hevc())
+    dash.representations(_480p)
+    dash.output(f"media/{output}Video{profile_id}_{current_time}.mpd")
+    system(f'rm {video}')
+    for file in listdir(f'media/Videos/Video{profile_id}_{current_time}/'):
+        
+        s3.upload_file(
+            f"media/{output}{file}",
+            AWS_STORAGE_BUCKET_NAME,
+            f"{output}{file}",
+            ExtraArgs={"ACL": "public-read"}
+        )
 
-        output = f"Videos/Video{profile_id}_{current_time}/"
-        _480p  = Representation(Size(854, 480), Bitrate(750 * 1024, 192 * 1024))
-        dash = input(video).dash(Formats.hevc())
-        dash.representations(_480p)
-        dash.output(f"media/{output}Video{profile_id}_{current_time}.mpd")
-        system(f'rm {video}')
-        for file in listdir(f'media/Videos/Video{profile_id}_{current_time}/'):
-            
-            s3.upload_file(
-                f"media/{output}{file}",
-                AWS_STORAGE_BUCKET_NAME,
-                f"{output}{file}",
-                ExtraArgs={"ACL": "public-read"}
-            )
-
-            system(f'rm media/{output}{file}')
-        system(f'rm -rf media/{output}')
-
-    except Exception as e:
-
-        raise str(e)
+        system(f'rm media/{output}{file}')
+    system(f'rm -rf media/{output}')
 
 @jwt_authentication
 async def uploadView(request):
@@ -82,6 +76,24 @@ async def uploadView(request):
         )
 
         return JSONResponse({"message":"Video Uploaded Successfully","status":True})
+
+    except Exception as e:
+
+        return JSONResponse({"message":str(e),"status":False},status_code=400)
+
+
+async def getVideo(request):
+    # import pdb; pdb.set_trace();
+    try:
+
+        form = await request.json()
+
+        
+        video = BaseUpload()
+        
+        data = video.get(form["video_id"])
+
+        return JSONResponse({"message":"Success","data":data,"status":True})
 
     except Exception as e:
 
