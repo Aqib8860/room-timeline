@@ -55,7 +55,7 @@ class Comment:
             self.client.videos.likes.update({"video_id":video_id},
                 {
                     "$push":{
-                        "comments":comment
+                        "comments":(profile_id,comment)
                     }
                 }
             )
@@ -66,7 +66,7 @@ class Comment:
             self.client.videos.comments.insert_one({
                 "_id":profile_id+"_"+str(datetime.utcnow().timestamp()),
                 "video_id":video_id,
-                "comments":[comment]
+                "comments":[(profile_id,comment)]
             })
 
         return "Liked Successfully"
