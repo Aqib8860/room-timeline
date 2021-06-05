@@ -86,12 +86,11 @@ async def getVideo(request):
     # import pdb; pdb.set_trace();
     try:
 
-        form = await request.json()
-
+        id = await request.path_params["id"]
         
         video = BaseUpload()
-        
-        data = video.get(form["video_id"])
+
+        data = video.get(id)
 
         return JSONResponse({"message":"Success","data":data,"status":True})
 
