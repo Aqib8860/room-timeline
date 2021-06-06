@@ -13,7 +13,7 @@ class ViewTracker:
             total_duration += i["duration"]
             count+=1
 
-        if self.client.videos.views.find_one({"video_id":video_id}):
+        if self.client.videos.views.find_one({"_id":{"$regex":video_id}}):
 
             self.client.videos.views.update_one({"_id":{"$regex":video_id}},{
                 "$set":{
