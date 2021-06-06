@@ -86,7 +86,7 @@ async def getVideo(request):
     # import pdb; pdb.set_trace();
     try:
 
-        id = await request.path_params["id"]
+        id = request.path_params["id"]
         
         video = BaseUpload()
 

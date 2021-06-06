@@ -1,5 +1,6 @@
 from server.settings import clientOpen
 from datetime import datetime
+from bson.json_util import loads, dumps
 
 class Like:
     def __init__(self):
@@ -49,7 +50,7 @@ class Comment:
     
     def create(self,profile_id,video_id,comment):
 
-        if c:=self.client.videos.comments.find_one({"video_id":video_id}):
+        if self.client.videos.comments.find_one({"video_id":video_id}):
 
             # Add New Comment To Existing Document
             self.client.videos.comments.update({"video_id":video_id},
@@ -72,4 +73,23 @@ class Comment:
         return "Commented Successfully"
 
     def close(self):
+        self.client.close()
+
+class LikeComment:
+
+    def __init__(self):
+        self.client = clientOpen()
+
+    def get(self, video_id):
+        
+        res = dict()
+
+        res["likes"]=len(loads(dumps(self.client.videos.likes.find_one({"video_id":video_id})))["users"])
+        
+        res["comments"]=loads(dumps(self.client.videos.comments.find_one({"video_id":video_id})))
+
+        return res
+
+    def close(self):
+
         self.client.close()

@@ -20,3 +20,4 @@ DATABASE CONNECTION
 
 def clientOpen():
     return MongoClient(f"mongodb+srv://myworld:{password}@cluster0.jzv7p.mongodb.net/myworld?retryWrites=true&w=majority")
+
