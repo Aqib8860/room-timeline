@@ -1,4 +1,3 @@
-import requests
 from starlette.responses import JSONResponse
 from server.auth import jwt_authentication
 from .models import Like, Comment, LikeCommentView

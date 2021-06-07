@@ -84,7 +84,10 @@ class LikeCommentView:
         
         res = dict()
 
-        res["likes"]=len(loads(dumps(self.client.videos.likes.find_one({"video_id":video_id})))["users"])
+        if c:=loads(dumps(self.client.videos.likes.find_one({"video_id":video_id}))):
+            res["likes"]=len(c["users"])
+        else:
+            res["likes"]=0
         
         res["comments"]=loads(dumps(self.client.videos.comments.find_one({"video_id":video_id})))
 

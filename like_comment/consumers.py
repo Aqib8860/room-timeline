@@ -1,7 +1,7 @@
-from server.settings import group
 from json import dumps
+from server.settings import group
 from starlette.endpoints import WebSocketEndpoint
-from starlette.websockets import WebSocket, WebSocketState
+from starlette.websockets import WebSocketState
 
 class LikeCommentViewSocket(WebSocketEndpoint):
 
