@@ -44,7 +44,13 @@ async def commentVideo(request):
 
         comment = Comment()
 
-        res = comment.create(profile_id,data["video_id"],data["comment"])
+        if request.method == 'POST':
+
+            res = comment.create(profile_id,data["video_id"],data["comment"])
+
+        else:
+
+            res = comment.delete(data["comment_id"])
 
         comment.close()
 

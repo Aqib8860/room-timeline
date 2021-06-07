@@ -74,6 +74,12 @@ class Comment:
 
         return "Commented Successfully"
 
+    def delete(self,comment_id):
+        if c:=self.client.videos.comments.find_one({"_id":comment_id}):
+            self.client.videos.comments.delete_one({"_id":comment_id})
+            return "Comment Deleted Successfully"
+        return "Comment Donot Exist"
+
     def close(self):
         self.client.close()
 
