@@ -50,7 +50,7 @@ async def commentVideo(request):
 
         else:
 
-            res = comment.delete(data["comment_id"])
+            res = comment.delete(data["video_comment_id"],data["comment_id"])
 
         comment.close()
 
