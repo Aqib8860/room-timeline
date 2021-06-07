@@ -11,7 +11,7 @@ from threading import Thread
 def videoConvertor(s3, video,profile_id,current_time):
     output = f"Videos/Video{profile_id}_{current_time}/"
     _480p  = Representation(Size(854, 480), Bitrate(750 * 1024, 192 * 1024))
-    dash = input(video).dash(Formats.hevc())
+    dash = input(video).dash(Formats.h264())
     dash.representations(_480p)
     dash.output(f"media/{output}Video{profile_id}_{current_time}.mpd")
     system(f'rm {video}')
