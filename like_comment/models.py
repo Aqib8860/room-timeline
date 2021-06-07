@@ -50,13 +50,15 @@ class Comment:
     
     def create(self,profile_id,video_id,comment):
 
+        profile = loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))
+
         if self.client.videos.comments.find_one({"video_id":video_id}):
 
             # Add New Comment To Existing Document
             self.client.videos.comments.update({"video_id":video_id},
                 {
                     "$push":{
-                        "comments":(profile_id,comment)
+                        "comments":{"profile_id":profile_id,"channel_name":profile["channel_name"],"profile_picture":profile["profile_picture"],"comment":comment}
                     }
                 }
             )
@@ -67,7 +69,7 @@ class Comment:
             self.client.videos.comments.insert_one({
                 "_id":profile_id+"_"+str(datetime.utcnow().timestamp()),
                 "video_id":video_id,
-                "comments":[(profile_id,comment)]
+                "comments":[{"profile_id":profile_id,"channel_name":profile["channel_name"],"profile_picture":profile["profile_picture"],"comment":comment}]
             })
 
         return "Commented Successfully"
