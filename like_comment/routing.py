@@ -1,6 +1,6 @@
-from .consumers import LikeCommentSocket
+from .consumers import LikeCommentViewSocket
 from starlette.routing import WebSocketRoute
 
 lc_socketpatterns=[
-    WebSocketRoute("/ws/lc", LikeCommentSocket),
+    WebSocketRoute("/ws/video", LikeCommentViewSocket),
 ]

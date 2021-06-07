@@ -75,7 +75,7 @@ class Comment:
     def close(self):
         self.client.close()
 
-class LikeComment:
+class LikeCommentView:
 
     def __init__(self):
         self.client = clientOpen()
@@ -87,6 +87,8 @@ class LikeComment:
         res["likes"]=len(loads(dumps(self.client.videos.likes.find_one({"video_id":video_id})))["users"])
         
         res["comments"]=loads(dumps(self.client.videos.comments.find_one({"video_id":video_id})))
+
+        res["views"]=loads(dumps(self.client.videos.views.find_one({"_id":{"$regex":video_id}})))
 
         return res
 

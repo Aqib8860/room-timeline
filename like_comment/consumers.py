@@ -1,26 +1,30 @@
+from server.settings import group
+from json import dumps
 from starlette.endpoints import WebSocketEndpoint
-from .models import LikeComment
-from json import dump
+from starlette.websockets import WebSocket, WebSocketState
 
-class LikeCommentSocket(WebSocketEndpoint):
-    encoding = 'json'
+class LikeCommentViewSocket(WebSocketEndpoint):
+
+    def __init__(self, scope, receive, send):
+        super().__init__(scope, receive, send)
+        group.group_add("video", self)
 
     async def on_connect(self, websocket):
-        global ws 
-        ws = websocket
-        await ws.accept()
-        global lc
-        lc = LikeComment()
+        self.websocket=websocket
+        await self.websocket.accept()
+    
+    async def broadcast(self, data: dict):
+        if self.websocket.application_state == WebSocketState.CONNECTED:
+            await self.websocket.send(message={
+                "type": "websocket.send",
+                "text": dumps(data)
+            })
+            return True
+        else:
+            return False
 
-    async def on_receive(self, websocket, data):
-        
-        await ws.send_json(lc.get(data["video_id"]))
-
-    def send(data):
-
-        ws.send_json(lc.get(data["video_id"]))
 
     async def on_disconnect(self, websocket, close_code):
-        await ws.close()
-        lc.close()
+        group.group_discard("video", self)
+        await self.websocket.close()
 

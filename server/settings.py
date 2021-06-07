@@ -4,6 +4,7 @@ from datetime import datetime
 from boto3 import client
 import jwt
 
+
 '''
 AWS CONNECTION
 '''
@@ -21,3 +22,28 @@ DATABASE CONNECTION
 def clientOpen():
     return MongoClient(f"mongodb+srv://myworld:{password}@cluster0.jzv7p.mongodb.net/myworld?retryWrites=true&w=majority")
 
+
+"""
+Groups
+"""
+
+class Groups:
+    def __init__(self):
+        self.groups = {}
+
+    def group_add(self, group_name, websocket_endpoint):
+        if group := self.groups.get(group_name):
+            group.append(websocket_endpoint)
+        else:
+            self.groups.update({group_name: [websocket_endpoint, ]})
+
+    def group_discard(self, group_name, websocket_endpoint):
+        if group_name in self.groups:
+            self.groups[group_name].remove(websocket_endpoint)
+
+    async def group_send(self, group_name, data):
+        if group := self.groups.get(group_name):
+            for i in group:
+                await i.broadcast(data=data)
+
+group = Groups()

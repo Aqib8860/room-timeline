@@ -1,8 +1,14 @@
 import requests
 from starlette.responses import JSONResponse
 from server.auth import jwt_authentication
-from .models import Like, Comment
-from .consumers import LikeCommentSocket
+from .models import Like, Comment, LikeCommentView
+from server.settings import group
+
+async def sendData(video_id):
+    
+    lcv = LikeCommentView()
+    await group.group_send("video", data=lcv.get(video_id))
+    lcv.close()
 
 @jwt_authentication
 async def likeVideo(request):
@@ -18,6 +24,9 @@ async def likeVideo(request):
         res = like.create_or_delete(profile_id,data["video_id"])
 
         like.close()
+
+
+        await sendData(data["video_id"])
 
         return JSONResponse({"message":res,"status":True})
 
@@ -40,12 +49,10 @@ async def commentVideo(request):
 
         comment.close()
 
+        await sendData(data["video_id"])
+
         return JSONResponse({"message":res,"status":True})
 
     except Exception as e:
 
         return JSONResponse({"message":str(e),"status":False},status_code=400)
-
-async def test(request):
-    # LikeCommentSocket.send=classmethod(LikeCommentSocket.send)
-    LikeCommentSocket.send(data={"video_id":"ID815885120000000040_test1_1622908303.699877_1_10"})

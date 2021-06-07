@@ -1,5 +1,6 @@
 from starlette.endpoints import WebSocketEndpoint
 from .models import ViewTracker
+from like_comment.views import sendData
 
 class ViewTrackingSocket(WebSocketEndpoint):
     
@@ -18,6 +19,8 @@ class ViewTrackingSocket(WebSocketEndpoint):
             await websocket.send_json({"message":"success"})
 
             self.vt.total(data["video_id"])
+
+            await sendData(data["video_id"])
 
         except Exception as e:
             await websocket.send_json({"message":str(e)})
