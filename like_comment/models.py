@@ -58,7 +58,7 @@ class Comment:
             self.client.videos.comments.update({"video_id":video_id},
                 {
                     "$push":{
-                        "comments":{"profile_id":profile_id,"channel_name":profile["channel_name"],"profile_picture":profile["profile_picture"],"comment":comment}
+                        "comments":{"comment_id":profile_id+"_"+str(datetime.utcnow().timestamp()),"profile_id":profile_id,"channel_name":profile["channel_name"],"profile_picture":profile["profile_picture"],"comment":comment}
                     }
                 }
             )
