@@ -67,16 +67,22 @@ class Comment:
 
             # Add New Comment
             self.client.videos.comments.insert_one({
-                "_id":profile_id+"_"+str(datetime.utcnow().timestamp()),
+                "_id":video_id+"_"+str(datetime.utcnow().timestamp()),
                 "video_id":video_id,
-                "comments":[{"profile_id":profile_id,"channel_name":profile["channel_name"],"profile_picture":profile["profile_picture"],"comment":comment}]
+                "comments":[{"comment_id":profile_id+"_"+str(datetime.utcnow().timestamp()),"profile_id":profile_id,"channel_name":profile["channel_name"],"profile_picture":profile["profile_picture"],"comment":comment}]
             })
 
         return "Commented Successfully"
 
-    def delete(self,comment_id):
-        if c:=self.client.videos.comments.find_one({"_id":comment_id}):
-            self.client.videos.comments.delete_one({"_id":comment_id})
+    def delete(self,video_comment_id,comment_id):
+        if c:=self.client.videos.comments.find_one({"_id":video_comment_id}):
+            self.client.videos.comments.update({"_id":video_comment_id},
+                    {
+                        "$pull":{
+                            "comments":{"comment_id":comment_id}
+                        }
+                    }
+                )
             return "Comment Deleted Successfully"
         return "Comment Donot Exist"
 
