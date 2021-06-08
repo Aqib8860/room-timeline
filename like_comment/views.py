@@ -26,7 +26,7 @@ async def likeVideo(request):
         await sendData(data["video_id"])
 
         token = request.headers['authorization'].split(" ")[1]
-        message=f"{like.user_name(profile_id)} liked your video like.video_title(data['video_id'])"
+        message=f"{like.user_name(profile_id)} liked your video {like.video_title(data['video_id'])}"
         requests.get(f"http://52.91.187.209:8000/notification/{token}/{message}")
 
         like.close()
@@ -58,7 +58,7 @@ async def commentVideo(request):
             res = comment.delete(data["video_comment_id"],data["comment_id"])
 
         token = request.headers['authorization'].split(" ")[1]
-        message=f"{comment.user_name(profile_id)} commented on your video comment.video_title(data['video_id'])"
+        message=f"{comment.user_name(profile_id)} commented on your video {comment.video_title(data['video_id'])}"
         requests.get(f"http://52.91.187.209:8000/notification/{token}/{message}")
 
         comment.close()
