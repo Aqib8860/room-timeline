@@ -41,6 +41,12 @@ class Like:
 
         return "Liked Successfully"
 
+    def user_name(self, profile_id):
+        return loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))["channel_name"]
+
+    def video_title(self, video_id):
+        return loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))["title"]
+        
     def close(self):
         self.client.close()
 
@@ -64,7 +70,7 @@ class Comment:
             )
             
         else:
-
+    
             # Add New Comment
             self.client.videos.comments.insert_one({
                 "_id":video_id+"_"+str(datetime.utcnow().timestamp()),
@@ -86,6 +92,12 @@ class Comment:
             return "Comment Deleted Successfully"
         return "Comment Donot Exist"
 
+    def user_name(self, profile_id):
+        return loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))["channel_name"]
+    
+    def video_title(self, video_id):
+        return loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))["title"]
+    
     def close(self):
         self.client.close()
 

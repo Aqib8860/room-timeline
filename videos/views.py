@@ -7,8 +7,9 @@ from server.settings import AWS_BASE_URL,AWS_STORAGE_BUCKET_NAME, AWS_DEFAULT_AC
 from boto3 import client
 from os import listdir, system
 from threading import Thread
+import requests
 
-def videoConvertor(s3, video,profile_id,current_time):
+def videoConvertor(s3, video,profile_id,current_time, token, title):
     output = f"Videos/Video{profile_id}_{current_time}/"
     _480p  = Representation(Size(854, 480), Bitrate(750 * 1024, 192 * 1024))
     dash = input(video).dash(Formats.h264())
@@ -27,10 +28,16 @@ def videoConvertor(s3, video,profile_id,current_time):
         system(f'rm media/{output}{file}')
     system(f'rm -rf media/{output}')
 
+    message=f"{title} Uploaded Successfully"
+
+    requests.get(f"http://52.91.187.209:8000/notification/{token}/{message}")
+
+
 @jwt_authentication
 async def uploadView(request):
     # import pdb; pdb.set_trace();
     try:
+        token = request.headers['authorization'].split(" ")[1]
 
         profile_id= request.user_id
 
@@ -59,7 +66,7 @@ async def uploadView(request):
 
         video_path=f"Videos/Video{profile_id}_{current_time}/Video{profile_id}_{current_time}.mpd"
         
-        optimizer_thread = Thread(target=videoConvertor, args=(s3, video,profile_id,current_time))
+        optimizer_thread = Thread(target=videoConvertor, args=(s3, video,profile_id,current_time,token, form['title']))
         optimizer_thread.daemon = True
         optimizer_thread.start()
 
