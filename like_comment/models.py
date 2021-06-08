@@ -46,7 +46,11 @@ class Like:
 
     def video_title(self, video_id):
         return loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))["title"]
-        
+    
+    def video_details(self, video_id):
+        video=loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))
+        return video["title"],video["profile_id"]
+
     def close(self):
         self.client.close()
 
@@ -59,7 +63,7 @@ class Comment:
         profile = loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))
 
         if self.client.videos.comments.find_one({"video_id":video_id}):
-
+    
             # Add New Comment To Existing Document
             self.client.videos.comments.update({"video_id":video_id},
                 {
@@ -70,7 +74,7 @@ class Comment:
             )
             
         else:
-    
+        
             # Add New Comment
             self.client.videos.comments.insert_one({
                 "_id":video_id+"_"+str(datetime.utcnow().timestamp()),
@@ -95,14 +99,15 @@ class Comment:
     def user_name(self, profile_id):
         return loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))["channel_name"]
     
-    def video_title(self, video_id):
-        return loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))["title"]
+    def video_details(self, video_id):
+        video=loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))
+        return video["title"],video["profile_id"]
     
     def close(self):
         self.client.close()
 
 class LikeCommentView:
-
+    
     def __init__(self):
         self.client = clientOpen()
 
