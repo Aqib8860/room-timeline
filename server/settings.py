@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from .local_settings import password, aws_access_key, aws_secret_access_key, aws_storage_bucket, aws_default_acl
+from .local_settings import username, password, aws_access_key, aws_secret_access_key, aws_storage_bucket, aws_default_acl
 from datetime import datetime
 from boto3 import client
 import jwt
@@ -20,7 +20,7 @@ DATABASE CONNECTION
 '''
 
 def clientOpen():
-    return MongoClient(f"mongodb+srv://myworld:{password}@cluster0.jzv7p.mongodb.net/myworld?retryWrites=true&w=majority")
+    return MongoClient(f"mongodb://{username}:{password}@docdb-2021-06-22-07-54-11.cluster-cmmlvhwuwqnu.ap-south-1.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
 
 
 """

@@ -1,10 +1,11 @@
 __pycache__
 
-.vscode
-
+media
 
 env
 
 venv
 
-exit
+rds-combined-ca-bundle.pem
+
+.vscode
