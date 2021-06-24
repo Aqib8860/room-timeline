@@ -30,7 +30,7 @@ def videoConvertor(s3, video,profile_id,current_time, token, title):
 
     message=f"{title} Uploaded Successfully"
 
-    requests.get(f"http://13.235.67.71/notification/{profile_id}/{message}")
+    requests.get(f"http://13.235.67.71/notification/{profile_id}/Video Upload/{id}/{message}")
 
 
 @jwt_authentication
