@@ -9,7 +9,7 @@ from os import listdir, system
 from threading import Thread
 import requests
 
-def videoConvertor(s3, video,profile_id,current_time, token, title):
+def videoConvertor(s3, video,profile_id,current_time, title, id):
     output = f"Videos/Video{profile_id}_{current_time}/"
     _480p  = Representation(Size(854, 480), Bitrate(750 * 1024, 192 * 1024))
     dash = input(video).dash(Formats.h264())
@@ -66,12 +66,9 @@ async def uploadView(request):
 
         video_path=f"Videos/Video{profile_id}_{current_time}/Video{profile_id}_{current_time}.mpd"
         
-        optimizer_thread = Thread(target=videoConvertor, args=(s3, video,profile_id,current_time,token, form['title']))
-        optimizer_thread.daemon = True
-        optimizer_thread.start()
 
         video = BaseUpload()
-        video.create(
+        id=video.create(
             profile_id,
             form['title'],
             form['description'],
@@ -82,6 +79,9 @@ async def uploadView(request):
             datetime.utcnow().timestamp()
         )
 
+        optimizer_thread = Thread(target=videoConvertor, args=(s3, video,profile_id,current_time, form['title'], id))
+        optimizer_thread.daemon = True
+        optimizer_thread.start()
         return JSONResponse({"message":"Video Uploaded Successfully","status":True})
 
     except Exception as e:

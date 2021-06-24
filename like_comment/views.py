@@ -28,7 +28,8 @@ async def likeVideo(request):
         if res == "Liked Successfully":
             title, creator = like.video_details(data['video_id'])
             message=f"{like.user_name(profile_id)} liked your video {title}"
-            requests.get(f"http://13.235.67.71/notification/{creator}/Like/{message}")
+            vid=data['video_id']
+            requests.get(f"http://13.235.67.71/notification/{creator}/Like/{vid}/{message}")
 
         like.close()
 
@@ -54,8 +55,9 @@ async def commentVideo(request):
 
             res = comment.create(profile_id,data["video_id"],data["comment"])
             title, creator = comment.video_details(data['video_id'])
+            vid=data['video_id']
             message=f"{comment.user_name(profile_id)} commented on your video {title}"
-            requests.get(f"http://13.235.67.71/notification/{creator}/Comment/{message}")
+            requests.get(f"http://13.235.67.71/notification/{creator}/Comment/{vid}/{message}")
             
         else:
         

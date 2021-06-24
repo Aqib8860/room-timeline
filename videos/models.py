@@ -7,8 +7,9 @@ class BaseUpload:
     
     def create(self, profile_id ,title, description, duration, category, thumbnail, upload_file, timestamp):
         profile=loads(dumps(self.client.videos.upload.find_one({"_id":profile_id})))
+        id=profile_id+"_"+title+"_"+str(timestamp)+"_"+category+"_"+str(duration)
         self.client.videos.upload.insert_one({
-            "_id":profile_id+"_"+title+"_"+str(timestamp)+"_"+category+"_"+str(duration),
+            "_id":id,
             "profile":{
                 "_id":profile_id,
                 "name":profile["name"],
@@ -25,6 +26,8 @@ class BaseUpload:
         })
 
         self.client.close()
+
+        return id
 
     def get(self, id):
         res = self.client.videos.upload.find_one({
