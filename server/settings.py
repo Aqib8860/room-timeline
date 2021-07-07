@@ -3,7 +3,7 @@ from .local_settings import username, password, aws_access_key, aws_secret_acces
 from datetime import datetime
 from boto3 import client
 import jwt
-
+from pyfcm import FCMNotification
 
 '''
 AWS CONNECTION
@@ -15,6 +15,14 @@ AWS_BASE_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/"
 def s3Client():
     return client('s3',aws_access_key_id=aws_access_key,aws_secret_access_key=aws_secret_access_key)
 
+'''
+FCM
+'''
+
+push_service = FCMNotification(api_key="AAAA06zBFVA:APA91bEzn2_SeZTRipMpqImpLc3otatgjRKfxj84W-oWuLCD7R7gYx8PR4PTfSiMjs08ddGvtB2S319QXzNDapVbGJEQNIdZdRc8XA3e6tZzAtcphM7YLuYe_nZgQIy487Xr0pJTC3Vj")
+
+def notify(token,body):
+    push_service.notify_single_device(registration_id=token, message_title="Myworld", message_body=body)   
 '''
 DATABASE CONNECTION
 '''

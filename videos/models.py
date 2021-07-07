@@ -36,3 +36,13 @@ class BaseUpload:
 
         self.client.close()
         return res
+
+    def delete(self,video_id):
+        self.client.videos.upload.delete_one({
+            "_id":video_id,
+        })
+
+        self.client.close()
+        
+    def token(self, profile):
+        return self.client.notifications.tokens.find_one({"profile":profile})["token"]

@@ -1,8 +1,7 @@
 from starlette.responses import JSONResponse
 from server.auth import jwt_authentication
 from .models import Like, Comment, LikeCommentView
-from server.settings import group
-import requests
+from server.settings import group, notify
 
 async def sendData(video_id):
     
@@ -21,12 +20,11 @@ async def likeVideo(request):
         like=Like()
         res = like.create_or_delete(profile_id,data["video_id"])
         await sendData(data["video_id"])
+        if res == "Liked Successfully":
+            cr,cn=like.creator_channel(data["video_id"])
+            token=like.token(cr)
+            notify(token,"{cn} liked your video")
 
-        #if res == "Liked Successfully":
-#            title, creator = like.video_details(data['video_id'])
-#            message=f"{like.user_name(profile_id)} liked your video {title}"
-#            vid=data['video_id']
-#            requests.get(f"http://13.235.67.71/notification/{creator}/Like/{vid}/{message}")
         like.close()
         return JSONResponse({"message":res,"status":True})
 
@@ -50,10 +48,9 @@ async def commentVideo(request):
         if request.method == 'POST':
 
             res = comment.create(profile_id,data["video_id"],data["comment"])
-#            title, creator = comment.video_details(data['video_id'])
-#            vid=data['video_id']
-#            message=f"{comment.user_name(profile_id)} commented on your video {title}"
-#            requests.get(f"http://13.235.67.71/notification/{creator}/Comment/{vid}/{message}")
+            cr,cn=comment.creator_channel(data["video_id"])
+            token=comment.token(cr)
+            notify(token,"{cn} commented on your video")
             
         else:
         

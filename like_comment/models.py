@@ -39,18 +39,7 @@ class Like:
             })
 
         return "Liked Successfully"
-
-    def user_name(self, profile_id):
-        return loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))["channel_name"]
-
-    def video_title(self, video_id):
-        return loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))["title"]
-    
-    def video_details(self, video_id):
-        video=loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))
-        print(video)
-        return video["title"],c["_id"]
-
+   
     def getLike(self, id):
         if c:=loads(dumps(self.client.videos.likes.find_one({"video_id":id}))):
             return len(c["users"])
@@ -64,6 +53,14 @@ class Like:
         else:
             return False
     
+    def creator_channel(self, video_id):
+        video=self.client.videos.upload.find_one({"_id":video_id})
+        profile=video.profile
+        return profile["_id"], profile["channel_name"]
+    
+    def token(self, profile):
+        return self.client.notifications.tokens.find_one({"profile":profile})["token"]
+
     def close(self):
         self.client.close()
 
@@ -109,14 +106,14 @@ class Comment:
             return "Comment Deleted Successfully"
         return "Comment Donot Exist"
 
-    def user_name(self, profile_id):
-        return loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))["channel_name"]
+    def creator_channel(self, video_id):
+        video=self.client.videos.upload.find_one({"_id":video_id})
+        profile=video.profile
+        return profile["_id"], profile["channel_name"]
     
-    def video_details(self, video_id):
-        video=loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))
-        c=video["profile"]
-        print(c["_id"])
-        return video["title"],c["_id"]
+    def token(self, profile):
+        return self.client.notifications.tokens.find_one({"profile":profile})["token"]
+
 
     def getComment(self, id):
         return loads(dumps(self.client.videos.comments.find_one({"video_id":id})))

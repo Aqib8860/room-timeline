@@ -3,13 +3,13 @@ from starlette.responses import JSONResponse
 from .models import BaseUpload
 from datetime import datetime
 from server.auth import jwt_authentication
-from server.settings import AWS_BASE_URL,AWS_STORAGE_BUCKET_NAME, AWS_DEFAULT_ACL, s3Client
+from server.settings import AWS_BASE_URL,AWS_STORAGE_BUCKET_NAME, AWS_DEFAULT_ACL, s3Client, notify
 from boto3 import client
 from os import listdir, system
 from threading import Thread
-import requests
 
-def videoConvertor(s3, video,profile_id,current_time, title, id):
+
+def videoConvertor(s3, video,profile_id,current_time, title, token):
     output = f"Videos/Video{profile_id}_{current_time}/"
     _480p  = Representation(Size(854, 480), Bitrate(750 * 1024, 192 * 1024))
     dash = input(video).dash(Formats.h264())
@@ -30,17 +30,15 @@ def videoConvertor(s3, video,profile_id,current_time, title, id):
 
     message=f"{title} Uploaded Successfully"
 
-    requests.get(f"http://13.235.67.71/notification/{profile_id}/Video Upload/{id}/{message}")
+
+    notify(token,message)
 
 
 @jwt_authentication
 async def uploadView(request):
     # import pdb; pdb.set_trace();
     try:
-        token = request.headers['authorization'].split(" ")[1]
-
         profile_id= request.user_id
-
         form = await request.form()
         current_time=int(datetime.utcnow().timestamp())
         thumbnail = f"media/Video_Thumbnails/Thumbnail{profile_id}_{current_time}.jpg"
@@ -65,10 +63,9 @@ async def uploadView(request):
             f.write(upload_video)
 
         video_path=f"Videos/Video{profile_id}_{current_time}/Video{profile_id}_{current_time}.mpd"
-        
 
         videos = BaseUpload()
-        id=videos.create(
+        videos.create(
             profile_id,
             form['title'],
             form['description'],
@@ -79,7 +76,9 @@ async def uploadView(request):
             datetime.utcnow().timestamp()
         )
 
-        optimizer_thread = Thread(target=videoConvertor, args=(s3, video,profile_id,current_time, form['title'], id))
+        token = videos.token(profile_id)
+
+        optimizer_thread = Thread(target=videoConvertor, args=(s3, video,profile_id,current_time, form['title'], token))
         optimizer_thread.daemon = True
         optimizer_thread.start()
         return JSONResponse({"message":"Video Uploaded Successfully","status":True})
@@ -100,6 +99,20 @@ async def getVideo(request):
         data = video.get(id)
 
         return JSONResponse({"message":"Success","data":data,"status":True})
+
+    except Exception as e:
+
+        return JSONResponse({"message":str(e),"status":False},status_code=400)
+
+@jwt_authentication
+async def deleteVideo(request):
+    # import pdb; pdb.set_trace();
+    try:
+        video_id= request.path_params["id"]
+        video=BaseUpload()
+        video.delete(video_id)
+
+        return JSONResponse({"message":"Video Deleted Successfully","status":True})
 
     except Exception as e:
 
