@@ -67,8 +67,8 @@ async def uploadView(request):
         video_path=f"Videos/Video{profile_id}_{current_time}/Video{profile_id}_{current_time}.mpd"
         
 
-        video = BaseUpload()
-        id=video.create(
+        videos = BaseUpload()
+        id=videos.create(
             profile_id,
             form['title'],
             form['description'],

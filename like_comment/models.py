@@ -11,7 +11,6 @@ class Like:
         if c:=self.client.videos.likes.find_one({"video_id":video_id}):
 
             # Delete Like
-
             if profile_id in c["users"]:
                 self.client.videos.likes.update({"video_id":video_id},
                     {
@@ -49,8 +48,22 @@ class Like:
     
     def video_details(self, video_id):
         video=loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))
-        return video["title"],video["profile_id"]
+        print(video)
+        return video["title"],c["_id"]
 
+    def getLike(self, id):
+        if c:=loads(dumps(self.client.videos.likes.find_one({"video_id":id}))):
+            return len(c["users"])
+        else:
+            return 0
+
+    def checkLike(self, video_id, profile):
+        c=self.client.videos.likes.find_one({"video_id":video_id})
+        if profile in c["users"]:
+            return True
+        else:
+            return False
+    
     def close(self):
         self.client.close()
 
@@ -101,7 +114,12 @@ class Comment:
     
     def video_details(self, video_id):
         video=loads(dumps(self.client.videos.upload.find_one({"_id":video_id})))
-        return video["title"],video["profile_id"]
+        c=video["profile"]
+        print(c["_id"])
+        return video["title"],c["_id"]
+
+    def getComment(self, id):
+        return loads(dumps(self.client.videos.comments.find_one({"video_id":id})))
     
     def close(self):
         self.client.close()

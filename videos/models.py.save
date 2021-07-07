@@ -1,3 +1,4 @@
+
 from server.settings import clientOpen
 from bson.json_util import loads, dumps
 class BaseUpload:
@@ -6,10 +7,11 @@ class BaseUpload:
         self.client = clientOpen()
     
     def create(self, profile_id ,title, description, duration, category, thumbnail, upload_file, timestamp):
+#        import pdb; pdb.set_trace();
         profile=loads(dumps(self.client.auth.profile.find_one({"_id":profile_id})))
-        id=profile_id+"_"+title+"_"+str(timestamp)+"_"+category+"_"+str(duration)
+        profile_id+"_"+title+"_"+str(timestamp)+"_"+category+"_"+str(duration)
         self.client.videos.upload.insert_one({
-            "_id":id,
+            "_id":profile_id+"_"+title+"_"+str(timestamp)+"_"+category+"_"+str(duration)z,
             "profile":{
                 "_id":profile_id,
                 "name":profile["name"],
@@ -27,7 +29,7 @@ class BaseUpload:
 
         self.client.close()
 
-        return id
+        return vid
 
     def get(self, id):
         res = self.client.videos.upload.find_one({
