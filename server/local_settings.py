@@ -7,9 +7,9 @@ password = "hgrhtAAeybVuuHCc"
 '''
 AWS SERVER CREDS
 '''
-aws_access_key = 'AKIARET4LDLNAFC546LY'
-aws_secret_access_key = '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'
-aws_storage_bucket = 'myworld-bucket'
+aws_access_key = 'AKIAWRTFIBNT2IPD7SUN'
+aws_secret_access_key = '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'
+aws_storage_bucket = 'myworld-bucket-new'
 aws_default_acl = 'public-read'
 
 '''

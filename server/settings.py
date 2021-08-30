@@ -28,7 +28,8 @@ DATABASE CONNECTION
 '''
 
 def clientOpen():
-    return MongoClient(f"mongodb://{username}:{password}@docdb-2021-06-22-07-54-11.cluster-cmmlvhwuwqnu.ap-south-1.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
+    
+    return MongoClient(f"mongodb://{username}:{password}@docdb-2021-08-26-17-00-10.cluster-cnx3ni4ekzmn.ap-south-1.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
 
 
 """
