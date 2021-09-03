@@ -36,7 +36,7 @@ def videoConvertor(s3, video,profile_id,current_time, title, token):
 
 @jwt_authentication
 async def uploadView(request):
-    # import pdb; pdb.set_trace();
+    import pdb; pdb.set_trace();
     try:
         profile_id= request.user_id
         form = await request.form()
@@ -51,7 +51,7 @@ async def uploadView(request):
         s3.upload_file(
             thumbnail,
             AWS_STORAGE_BUCKET_NAME,
-            thumbnail,
+            thumbnail[6:],
             ExtraArgs={"ACL": "public-read"}
         )
 
