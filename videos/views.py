@@ -42,6 +42,7 @@ async def uploadView(request):
         form = await request.form()
         current_time=int(datetime.utcnow().timestamp())
         thumbnail = f"media/Video_Thumbnails/Thumbnail{profile_id}_{current_time}.jpg"
+        thumbnail_name=f"Thumbnail{profile_id}_{current_time}.jpg"
 
         upload_thumbnail = await form["thumbnail"].read()
 
@@ -49,7 +50,7 @@ async def uploadView(request):
         s3.upload_file(
             thumbnail,
             AWS_STORAGE_BUCKET_NAME,
-            thumbnail[6:],
+            thumbnail_name,
             ExtraArgs={"ACL": "public-read"}
         )
 
