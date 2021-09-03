@@ -44,8 +44,6 @@ async def uploadView(request):
         thumbnail = f"media/Video_Thumbnails/Thumbnail{profile_id}_{current_time}.jpg"
 
         upload_thumbnail = await form["thumbnail"].read()
-        with open(thumbnail,"wb+") as f:
-            f.write(upload_thumbnail)
 
         s3 = s3Client()
         s3.upload_file(
