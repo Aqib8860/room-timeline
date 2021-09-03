@@ -51,7 +51,7 @@ async def uploadView(request):
         s3.upload_file(
             thumbnail,
             AWS_STORAGE_BUCKET_NAME,
-            thumbnail[6:],
+            thumbnail,
             ExtraArgs={"ACL": "public-read"}
         )
 
