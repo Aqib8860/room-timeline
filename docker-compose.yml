@@ -1,0 +1,30 @@
+
+version: '3.9' 
+
+services:
+    nginx:
+        image: nginx
+        container_name: nginx
+        volumes: 
+            - ./:/code
+            - ./default.conf:/etc/nginx/sites-enabled/default.conf
+            - ./default.conf:/etc/nginx/sites-available/default.conf
+        ports: 
+            - 50:50
+        networks: 
+            - my-network
+        depends_on: 
+            - api
+    api: 
+        build: 
+            context: ./
+            dockerfile: Dockerfile
+        container_name: backend
+        volumes: 
+            - ./:/code
+        networks: 
+            my-network: 
+                aliases: 
+                    - backend-app
+networks: 
+    my-network: 

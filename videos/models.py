@@ -1,5 +1,8 @@
 from server.settings import clientOpen
 from bson.json_util import loads, dumps
+from datetime import datetime
+
+
 class BaseUpload:
 
     def __init__(self):
@@ -37,12 +40,30 @@ class BaseUpload:
         self.client.close()
         return res
 
+    def allvideos(self):
+        res = loads(dumps(self.client.videos.upload.find()))
+        self.client.close()
+        return res
+
     def delete(self,video_id):
         self.client.videos.upload.delete_one({
             "_id":video_id,
         })
 
         self.client.close()
-        
+
+    def exploreImage(self,title,description,image):
+        self.client.explore.images.insert_one({
+            "_id":title+"_"+str(datetime.utcnow().timestamp()),
+            "title":title,
+            "description":description,
+            "image":image,
+            "timestamp":str(datetime.utcnow().timestamp())
+        })
+        self.client.close()
+        return True
+
     def token(self, profile):
         return self.client.notifications.tokens.find_one({"profile":profile})["token"]
+
+

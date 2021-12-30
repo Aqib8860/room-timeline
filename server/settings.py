@@ -28,8 +28,8 @@ DATABASE CONNECTION
 '''
 
 def clientOpen():
-    return MongoClient(f"mongodb://{username}:{password}@docdb-2021-08-31-04-49-08.cluster-cnx3ni4ekzmn.ap-south-1.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
-
+    #return MongoClient(f"mongodb://{username}:{password}@docdb-2021-08-31-04-49-08.cluster-cnx3ni4ekzmn.ap-south-1.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
+    return MongoClient(f"mongodb+srv://aiworld:i6TO1DZbtBzckOnx@mydb.xci1l.mongodb.net/mydb?retryWrites=true&w=majority")
 
 """
 Groups

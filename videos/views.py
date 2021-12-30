@@ -33,6 +33,16 @@ def videoConvertor(s3, video,profile_id,current_time, title, token):
 
     notify(token,message)
 
+def videoConverter(s3, video, video_path, title, token):
+    s3.upload_file(
+        video,
+        AWS_STORAGE_BUCKET_NAME,
+        video_path,
+        ExtraArgs={"ACL": "public-read"},
+    )
+    message = f"{title} Upload Successfully"
+    notify(token,message)
+
 
 @jwt_authentication
 async def uploadView(request):
@@ -76,9 +86,9 @@ async def uploadView(request):
             datetime.utcnow().timestamp()
         )
 
-        token = videos.token(profile_id)
+        token = profile_id
 
-        optimizer_thread = Thread(target=videoConvertor, args=(s3, video,profile_id,current_time, form['title'], token))
+        optimizer_thread = Thread(target=videoConverter, args=(s3, video,video_path,form['title'], token))
         optimizer_thread.daemon = True
         optimizer_thread.start()
         return JSONResponse({"message":"Video Uploaded Successfully","status":True})
@@ -104,6 +114,14 @@ async def getVideo(request):
 
         return JSONResponse({"message":str(e),"status":False},status_code=400)
 
+async def videoTimeline(request):
+    try:
+        video = BaseUpload()
+        return JSONResponse({"message": video.allvideos(), "status":True}, status_code=200)
+
+    except Exception as e:
+        return JSONResponse({"message":str(e), "status":False}, status_code=400)
+
 @jwt_authentication
 async def deleteVideo(request):
     # import pdb; pdb.set_trace();
@@ -117,3 +135,37 @@ async def deleteVideo(request):
     except Exception as e:
 
         return JSONResponse({"message":str(e),"status":False},status_code=400)
+
+
+async def exploreImage(request):
+    try:
+        form = await request.form()
+        current_time = int(datetime.utcnow().timestamp())
+
+        title = form["title"]
+        image = f"media/public_events/{title}_{current_time}.jpg"
+
+        upload_image = await form["image"].read()
+        with open(image,"wb+") as f:
+            f.write(upload_image)
+
+        s3 = s3Client()
+        s3.upload_file(
+            image,
+            AWS_STORAGE_BUCKET_NAME,
+            image,
+            ExtraArgs={"ACL":"public-read"}
+        )
+
+
+        explore_image = BaseUpload()
+        explore_image.exploreImage(title,form["description"],AWS_BASE_URL+image)
+
+        system(f'rm {image}')
+        
+        return JSONResponse({"message":"Upload Success","status":True})
+
+    except Exception as e:
+        return JSONResponse({"message":str(e),"status":False},status_code=400)
+              
+        
