@@ -12,15 +12,14 @@ class ViewTrackingSocket(WebSocketEndpoint):
 
     async def on_receive(self, websocket, data):
         try:
-            if data["duration"]>5:
 
-                self.vt.create(data["id"],data["video_id"],data["duration"])
+            # self.vt.roomTimeline(data["user_id"],data["limit"])
             
-            await websocket.send_json({"message":"success"})
+            await websocket.send_json(self.vt.roomTimeline(data["user_id"],data["limit"]))
 
-            self.vt.total(data["video_id"])
+            #self.vt.total(data["video_id"])
 
-            await sendData(data["video_id"])
+            #await sendData(data["video_id"])
 
         except Exception as e:
             await websocket.send_json({"message":str(e)})

@@ -37,8 +37,8 @@ class ViewTracker:
         else:
             self.client.videos.viewtracker.insert_one({"_id":id,"video_id":video_id,"duration":duration})
 
-    def get(self,video_id):
-        return loads(dumps(self.client.videos.views.find_one({"_id":{"$regex":video_id}})))
-
+    def roomTimeline(self,user_id,limit):
+        res =  loads(dumps(self.client.myspace.rooms.find()))
+        return res
     def close(self):
         self.client.close()
